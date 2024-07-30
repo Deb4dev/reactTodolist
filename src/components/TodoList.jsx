@@ -2,15 +2,26 @@ import React, { useEffect, useState } from 'react'
 import './CSS/Todo.css'
 import { useRef } from 'react'
 import TodoItems from './TodoItems'
+//
+import EmtModal from './EmtModal'
 let count = 0
 function TodoList() {
+  const [ShowModal,setShowModal] = useState(false)
   const [Todos,setTodos] = useState([])
   const inputRef = useRef(null)
+
+  const closeModal = () => setShowModal(false)
   
   const add = ()=>{
-    setTodos([...Todos,{no:count++,text:inputRef.current.value,display:""}])
-    inputRef.current.value = ""
-    //localStorage.setItem("Todo_count",count)
+    if(inputRef.current.value ===""){
+      console.log("empty data")
+      setShowModal(true)//return <EmtModal/>
+    }
+    else{
+      setTodos([...Todos,{no:count++,text:inputRef.current.value,display:""}])
+      inputRef.current.value = ""
+      //localStorage.setItem("Todo_count",count)
+    }
   }
 
 //retrieve data from localestorage
@@ -21,7 +32,6 @@ function TodoList() {
 
   useEffect(()=>{
     setTimeout(()=>{
-      
       localStorage.setItem("Todos",JSON.stringify(Todos))
     },10)
     
@@ -39,6 +49,7 @@ function TodoList() {
             return <TodoItems key={index} setTodos={setTodos} no ={item.no} text ={item.text} display={item.display} count={count}/>
           })}
       </div>
+      {ShowModal && <EmtModal closeModal = {closeModal} />}
     </div>
   )
 }
